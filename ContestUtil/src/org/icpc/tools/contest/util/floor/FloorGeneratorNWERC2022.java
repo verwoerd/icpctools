@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2022 Keystone Strategic b.v.
- *
- * All rights reserved.
- */
-
 package org.icpc.tools.contest.util.floor;
 
 import org.icpc.tools.contest.Trace;
