@@ -29,8 +29,8 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
 
   private static final int numRooms = 8;
   private static final int firstRoom = 9;
-  private static final int numRows = 30;
-  private static final int numCols = 30;
+  private static final int numRows = 40;
+  private static final int numCols = 40;
   private static final int numProblems = 13;
   private static final float innerRoomSpace = 1f;
   private static final float magicXDiff = .6f;
@@ -70,10 +70,12 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
     try {
       float lastX = numRows * taw;
       float lastY = numCols * tad;
+      float foyerStart = (float) (lastX - numCols * .4 * taw);
+      float foyerEnd = foyerStart + taw * 10;
 
       for (int i = 0; i < numProblems; i++) {
         float y = lastY + 1;
-        float x = lastX + (i + 1) * 20f / 12f; //roomHeight + 20f * (i + 1) / 12f;
+        float x = (float) (.75*lastX + (i + 1) * 20f / 12f); //roomHeight + 20f * (i + 1) / 12f;
         if (useIntegerBalloons > 0) {
           floor.createBalloon((i + useIntegerBalloons) + "", x, y);
         } else {
@@ -82,118 +84,13 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       }
       IPrinter p = floor.createPrinter(lastX + 1, lastY + 1);
 
-      // Foyer bounding box
-      float foyerStart = lastX - 7 * taw;
-      float foyerHeight = lastY - 10 * tad;
-      floor.createAisle(foyerStart - 1, lastY, lastX, lastY);
-      floor.createAisle(foyerStart - 1, lastY, foyerStart - 1, foyerHeight);
-      floor.createAisle(lastX, foyerHeight, foyerStart - 1, foyerHeight);
-      floor.createAisle(lastX, foyerHeight, lastX, lastY);
-      int teamId = 1;
-      for (int team = 0; team < 5; team++) {
-        float y = lastY - (2 * tad) * team;
-        floor.createAisle(foyerStart - 1, y, lastX, y);
-        for (int times = 0; times < 7; times++) {
-          floor.createTeam(teamId++, foyerStart + 1 + taw * times, y - .5 * tad, FloorMap.E);
-          floor.createTeam(teamId++, foyerStart + 1 + taw * times, y - 1.5 * tad, FloorMap.E);
-        }
-      }
 
-      // stairs 2 second floor
-      float videXStart = taw * 5;
-      float videYEnd = lastY - 6 * tad;
-      float videYStart = 6 * tad;
-      floor.createAisle(foyerStart, lastY - tad, taw, lastY - tad);
-      floor.createAisle(taw, lastY - tad, taw, videYEnd - 5 * tad);
-      floor.createAisle(taw, videYEnd - 5 * tad, videXStart, videYEnd - 5 * tad);
-
-      // hallway before senaatszaal
-      floor.createAisle(videXStart, videYStart, videXStart, videYEnd);
-
-
-      // commissie kamer south
-      floor.createAisle(videXStart, videYEnd, videXStart + 2 * taw, videYEnd);
-      floor.createAisle(videXStart + 2 * taw, videYEnd, videXStart + 2 * taw, videYEnd + 4 * tad);
-      floor.createAisle(videXStart + 2 * taw, videYEnd, videXStart + 3 * taw, videYEnd);
-      floor.createAisle(videXStart + 3 * taw, videYEnd, videXStart + 3 * taw, videYEnd + 4 * tad);
-      // left column
-      floor.createTeam(teamId++, videXStart + 1.5 * taw, videYEnd + .5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 1.5 * taw, videYEnd + 1.5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 1.5 * taw, videYEnd + 2.5 * tad, FloorMap.N);
-      // middle column
-      floor.createTeam(teamId++, videXStart + 2.5 * taw, videYEnd + .5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 2.5 * taw, videYEnd + 1.5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 2.5 * taw, videYEnd + 2.5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 2.5 * taw, videYEnd + 3.5 * tad, FloorMap.N);
-      // right column
-      floor.createTeam(teamId++, videXStart + 3.5 * taw, videYEnd + .5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 3.5 * taw, videYEnd + 1.5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 3.5 * taw, videYEnd + 2.5 * tad, FloorMap.N);
-      floor.createTeam(teamId++, videXStart + 3.5 * taw, videYEnd + 3.5 * tad, FloorMap.N);
-
-
-      // commissie kamers North
-      floor.createAisle(videXStart, videYStart, videXStart + 4 * taw, videYStart);
-      floor.createAisle(videXStart + 2 * taw, videYStart, videXStart + 2 * taw, videYStart - 4 * tad);
-      floor.createAisle(videXStart + 2 * taw, videYStart, videXStart + 3 * taw, videYStart);
-      floor.createAisle(videXStart + 4 * taw, videYStart, videXStart + 4 * taw, videYStart - 4 * tad);
-      // left column left room
-      for (int i = 0; i < 4; i++) {
-        floor.createTeam(teamId++, videXStart + (i + 1.5) * taw, videYStart - .5 * tad, FloorMap.S);
-        floor.createTeam(teamId++, videXStart + (i + 1.5) * taw, videYStart - 1.5 * tad, FloorMap.S);
-        floor.createTeam(teamId++, videXStart + (i + 1.5) * taw, videYStart - 2.5 * tad, FloorMap.S);
-        floor.createTeam(teamId++, videXStart + (i + 1.5) * taw, videYStart - 3.5 * tad, FloorMap.S);
-      }
-
-      // Senaatszaal
-
-      floor.createAisle(videXStart, videYStart + 4 * taw, videXStart + 12 * tad, videYStart + 4 * taw);
-      floor.createAisle(videXStart, videYEnd - 4 * taw, videXStart + 12 * tad, videYEnd - 4 * taw);
-      floor.createAisle(videXStart + 10 * tad, videYStart + 4 * taw, videXStart + 10 * tad, videYEnd - 4 * taw);
-      floor.createAisle(videXStart + 12 * tad, videYStart + 4 * taw, videXStart + 12 * tad, videYEnd - 4 * taw);
-      // aisles to east wall
-      floor.createAisle(videXStart + 10 * tad, videYStart + 6 * taw, videXStart + 7 * tad, videYStart + 6 * taw);
-      floor.createAisle(videXStart + 10 * tad, videYStart + 8 * taw, videXStart + 5 * tad, videYStart + 8 * taw);
-      floor.createAisle(videXStart + 10 * tad, videYStart + 10 * taw, videXStart + 5 * tad, videYStart + 10 * taw);
-      floor.createAisle(videXStart + 10 * tad, videYStart + 12 * taw, videXStart + 5 * tad, videYStart + 12 * taw);
-      // aisles to west wall
-      floor.createAisle(videXStart + 12 * tad, videYStart + 7 * taw, videXStart + 14 * tad, videYStart + 7 * taw);
-      floor.createAisle(videXStart + 12 * tad, videYStart + 11 * taw, videXStart + 14 * tad, videYStart + 11 * taw);
-
-      // north corner teams
-      floor.createTeam(teamId++, videXStart + 12 * tad, videYStart + 3.5 * taw, FloorMap.E);
-      floor.createTeam(teamId++, videXStart + 11 * tad, videYStart + 3.5 * taw, FloorMap.E);
-      floor.createTeam(teamId++, videXStart + 10 * tad, videYStart + 3.5 * taw, FloorMap.E);
-
-      // south corner teams
-      floor.createTeam(teamId++, videXStart + 12 * tad, videYEnd - 3.5 * taw, FloorMap.E);
-      floor.createTeam(teamId++, videXStart + 11 * tad, videYEnd - 3.5 * taw, FloorMap.E);
-      floor.createTeam(teamId++, videXStart + 10 * tad, videYEnd - 3.5 * taw, FloorMap.E);
-
-      // west wall teams
-      floor.createTeam(teamId++, videXStart + 14 * tad, videYStart + 7 * taw, FloorMap.E);
-      floor.createTeam(teamId++, videXStart + 14 * tad, videYStart + 11 * taw, FloorMap.E);
-      floor.createTeam(teamId++, videXStart + 13 * tad, videYStart + 8 * taw, FloorMap.S);
-      floor.createTeam(teamId++, videXStart + 13 * tad, videYStart + 10 * taw, FloorMap.N);
-
-      // east wall teams
-      for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-          floor.createTeam(teamId++, videXStart + (9.5 - i) * tad, videYStart + (5 + 2 * j) * taw, FloorMap.E);
-        }
-      }
-
-      // route to van hasselt
+      float foyerHeight = (float) (lastY - numCols / 2.0 * tad);
       float vanHasseltEntranceX = lastX + 2 * taw;
-      floor.createAisle(lastX, lastY, vanHasseltEntranceX, lastY);
-      floor.createAisle(vanHasseltEntranceX, lastY, vanHasseltEntranceX, foyerStart - 6 * taw);
-      // aisles in van hasselt
-      floor.createAisle(vanHasseltEntranceX, foyerStart - 6 * taw, vanHasseltEntranceX - 2 * tad, foyerStart - 8 * taw);
-      floor.createAisle(vanHasseltEntranceX - 2 * tad, foyerStart - 8 * taw, vanHasseltEntranceX + 8 * tad,
-          foyerStart - 8 * taw);
-      floor.createAisle(vanHasseltEntranceX, foyerStart - 6 * taw, vanHasseltEntranceX + 8 * tad, foyerStart - 8 * taw);
-      floor.createAisle(vanHasseltEntranceX, foyerStart - 12 * taw, vanHasseltEntranceX + 8 * tad,
-          foyerStart - 8 * taw);
+      float videXStart = taw * 5;
+      float videYEnd = lastY - 12 * tad;
+      float videYStart = 6 * tad;
+      int teamId = 1;
 
       // van hasselt west teams
       floor.createTeam(teamId++, vanHasseltEntranceX - tad, foyerStart - 6 * taw, 135);
@@ -215,6 +112,125 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
         floor.createTeam(teamId++, vanHasseltEntranceX - tad + (tad * i), foyerStart - 8.5 * taw, FloorMap.E);
       }
 
+      float commissieKamerStartX = (float) (videXStart + 3.5 * taw);
+      // left column
+      floor.createTeam(teamId++, commissieKamerStartX, videYEnd + .5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX, videYEnd + 1.5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX, videYEnd + 2.5 * tad, FloorMap.N);
+      // middle column
+      floor.createTeam(teamId++, commissieKamerStartX + 1.5 * taw, videYEnd + .5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX + 1.5 * taw, videYEnd + 1.5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX + 1.5 * taw, videYEnd + 2.5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX + 1.5 * taw, videYEnd + 3.5 * tad, FloorMap.N);
+      // right column
+      floor.createTeam(teamId++, commissieKamerStartX + 3 * taw, videYEnd + .5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX + 3 * taw, videYEnd + 1.5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX + 3 * taw, videYEnd + 2.5 * tad, FloorMap.N);
+      floor.createTeam(teamId++, commissieKamerStartX + 3 * taw, videYEnd + 3.5 * tad, FloorMap.N);
+
+      // senaatszaal teams
+      // north corner teams
+      floor.createTeam(teamId++, videXStart + 12 * tad, videYStart + 3.5 * taw, FloorMap.E);
+      floor.createTeam(teamId++, videXStart + 11 * tad, videYStart + 3.5 * taw, FloorMap.E);
+      floor.createTeam(teamId++, videXStart + 10 * tad, videYStart + 3.5 * taw, FloorMap.E);
+
+      // west wall teams
+      floor.createTeam(teamId++, videXStart + 14 * tad, videYStart + 8.5 * taw, FloorMap.E);
+      floor.createTeam(teamId++, videXStart + 13 * tad, videYStart + 9.75 * taw, FloorMap.S);
+      floor.createTeam(teamId++, videXStart + 13 * tad, videYStart + 12.25 * taw, FloorMap.N);
+      floor.createTeam(teamId++, videXStart + 14 * tad, videYStart + 13.5 * taw, FloorMap.E);
+
+
+      // east wall teams
+      for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 5; j++) {
+          floor.createTeam(teamId++, videXStart + (9.5 - j) * tad, videYStart + (8 + 2 * i) * taw, FloorMap.E);
+        }
+      }
+
+      // south corner teams
+      floor.createTeam(teamId++, videXStart + 12 * tad, videYEnd - 3.5 * taw, FloorMap.E);
+      floor.createTeam(teamId++, videXStart + 11 * tad, videYEnd - 3.5 * taw, FloorMap.E);
+      floor.createTeam(teamId++, videXStart + 10 * tad, videYEnd - 3.5 * taw, FloorMap.E);
+
+      // left column left room
+      for (int i = 0; i < 4; i++) {
+        floor.createTeam(teamId++, commissieKamerStartX + (i * 1.5) * taw, videYStart - .5 * tad, FloorMap.S);
+        floor.createTeam(teamId++, commissieKamerStartX + (i * 1.5) * taw, videYStart - 1.5 * tad, FloorMap.S);
+        floor.createTeam(teamId++, commissieKamerStartX + (i * 1.5) * taw, videYStart - 2.5 * tad, FloorMap.S);
+        floor.createTeam(teamId++, commissieKamerStartX + (i * 1.5) * taw, videYStart - 3.5 * tad, FloorMap.S);
+      }
+
+      floor.createAisle(lastX+1, lastY+1, lastX, lastY);
+      // Foyer bounding box
+      floor.createAisle(foyerEnd, lastY, lastX, lastY);
+      floor.createAisle(foyerStart - 1, lastY, foyerEnd, lastY);
+      floor.createAisle(foyerStart - 1, lastY, foyerStart - 1, foyerHeight);
+      floor.createAisle(foyerEnd, foyerHeight, foyerStart - 1, foyerHeight);
+      floor.createAisle(foyerEnd, foyerHeight, foyerEnd, lastY);
+
+      for (int team = 0; team < 10; team++) {
+        float y = lastY - (2 * tad) * team;
+        floor.createAisle(foyerStart - 1, y, foyerEnd, y);
+        for (int times = 0; times < 7; times++) {
+          floor.createTeam(teamId++, foyerStart + 1 + taw * times * 1.5, y - 1.5 * tad, FloorMap.E);
+        }
+      }
+
+      // stairs 2 second floor
+      floor.createAisle(foyerStart - 1, lastY - tad, taw, lastY - tad);
+      floor.createAisle(taw, lastY - tad, taw, videYEnd - 5 * tad);
+      floor.createAisle(taw, videYEnd - 5 * tad, videXStart, videYEnd - 5 * tad);
+
+      // hallway before senaatszaal
+      floor.createAisle(videXStart, videYStart, videXStart, videYEnd);
+
+      // commissie kamer south
+      floor.createAisle(videXStart, videYEnd, commissieKamerStartX + 3.5 * taw, videYEnd);
+      floor.createAisle(commissieKamerStartX + .75*taw, videYEnd, commissieKamerStartX + .75*taw, videYEnd + 4 * tad);
+      floor.createAisle(commissieKamerStartX + 3.75*taw, videYEnd, commissieKamerStartX + 3.75*taw, videYEnd + 4 * tad);
+
+      // commissie kamers North
+      floor.createAisle(videXStart, videYStart, commissieKamerStartX + 5 * taw, videYStart);
+      floor.createAisle(commissieKamerStartX + .75*taw, videYStart, commissieKamerStartX + .75*taw, videYStart - 4 * tad);
+      floor.createAisle(commissieKamerStartX + 3.75*taw, videYStart, commissieKamerStartX + 3.75*taw, videYStart - 4 * tad);
+
+
+      // Senaatszaal
+
+      floor.createAisle(videXStart, videYStart + 4 * taw, videXStart + 12 * tad, videYStart + 4 * taw);
+      floor.createAisle(videXStart, videYEnd - 4 * taw, videXStart + 12 * tad, videYEnd - 4 * taw);
+      floor.createAisle(videXStart + 10 * tad, videYStart + 4 * taw, videXStart + 10 * tad, videYEnd - 4 * taw);
+      floor.createAisle(videXStart + 12 * tad, videYStart + 4 * taw, videXStart + 12 * tad, videYEnd - 4 * taw);
+      // aisles to east wall
+      floor.createAisle(videXStart + 10 * tad, videYStart + 9 * taw, videXStart + 3 * tad, videYStart + 9 * taw);
+      floor.createAisle(videXStart + 10 * tad, videYStart + 11 * taw, videXStart + 3 * tad, videYStart + 11 * taw);
+      floor.createAisle(videXStart + 10 * tad, videYStart + 13 * taw, videXStart + 3 * tad, videYStart + 13 * taw);
+      // aisles to west wall
+      floor.createAisle(videXStart + 12 * tad, videYStart + 9 * taw, videXStart + 14 * tad, videYStart + 9 * taw);
+      floor.createAisle(videXStart + 12 * tad, videYStart + 13* taw, videXStart + 14 * tad, videYStart + 13 * taw);
+
+      // Path Senaatszaal to van hasselt (not in scale)
+      floor.createAisle(videXStart + 12 * tad, videYStart + 6 * taw, videXStart + 20 * tad, videYStart + 6 * taw);
+      floor.createAisle(videXStart + 20 * tad, videYStart + 6 * taw, videXStart + 20 * tad, videYStart + 9 * taw);
+      floor.createAisle(videXStart + 20 * tad, videYStart + 9 * taw, videXStart + 35 * tad, videYStart + 9 * taw);
+      // comment next line to avoid all paths to the third floor going through van hasselt
+      floor.createAisle(videXStart + 35 * tad, videYStart + 9 * taw, videXStart + 35 * tad, videYStart + 10 * taw);
+
+
+      // route to van hasselt
+
+      floor.createAisle(lastX, lastY, vanHasseltEntranceX, lastY);
+      floor.createAisle(vanHasseltEntranceX, lastY, vanHasseltEntranceX, foyerStart - 6 * taw);
+      // aisles in van hasselt
+      floor.createAisle(vanHasseltEntranceX, foyerStart - 6 * taw, vanHasseltEntranceX - 2 * tad, foyerStart - 8 * taw);
+      floor.createAisle(vanHasseltEntranceX - 2 * tad, foyerStart - 8 * taw, vanHasseltEntranceX + 8 * tad,
+          foyerStart - 8 * taw);
+      floor.createAisle(vanHasseltEntranceX, foyerStart - 6 * taw, vanHasseltEntranceX + 8 * tad, foyerStart - 8 * taw);
+      floor.createAisle(vanHasseltEntranceX, foyerStart - 12 * taw, vanHasseltEntranceX + 8 * tad,
+          foyerStart - 8 * taw);
+
+
       floor.write(Paths.get("tmp").toFile());
 
       Trace.trace(Trace.USER, "------------------");
@@ -222,14 +238,16 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       long time = System.currentTimeMillis();
       FloorMap.Path path1 = floor.getPath(p, floor.getTeam(6));
       FloorMap.Path path2 = floor.getPath(p, floor.getTeam(155));
-      FloorMap.Path path3 = floor.getPath(p, floor.getTeam(107));
+      FloorMap.Path path3 = floor.getPath(p, floor.getTeam(72));
+      FloorMap.Path path4 = floor.getPath(p, floor.getTeam(55));
 
       Trace.trace(Trace.USER, "Time: " + (System.currentTimeMillis() - time));
 
       show(floor, -1, true);
       show(floor, 6, true, path1);
       show(floor, 155, true, path2);
-      show(floor, 107, true, path3);
+      show(floor, 72, true, path3);
+      show(floor, 55, true, path4);
     } catch (Exception e) {
       Trace.trace(Trace.ERROR, "Error generating floor map", e);
     }
