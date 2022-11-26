@@ -7,6 +7,7 @@ import org.icpc.tools.contest.model.ITeam;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -92,15 +93,19 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       float videYStart = 6 * tad;
       int teamId = 1;
 
-      // van hasselt west teams
+      // van hasselt west bottom teams
       floor.createTeam(teamId++, vanHasseltEntranceX - tad, foyerStart - 6 * taw, 135);
       floor.createTeam(teamId++, vanHasseltEntranceX - 2 * tad, foyerStart - 7 * taw, 135);
       floor.createTeam(teamId++, vanHasseltEntranceX - 3 * tad, foyerStart - 8 * taw, 135);
 
       // van hasselt east bottom teams
-      for (int i = 0; i < 8; i++) {
+      for (int i = 0; i < 5; i++) {
         floor.createTeam(teamId++, vanHasseltEntranceX + (i + 1) * tad, foyerStart - (5.7 + i * .25) * taw, 194);
       }
+
+      // van hasselt west top teams
+      floor.createTeam(teamId++, vanHasseltEntranceX - 1.6 * tad, foyerStart - (12 - 3 * .5) * taw, 57);
+      floor.createTeam(teamId++, vanHasseltEntranceX - tad, foyerStart - (12 - .5) * taw, 57);
 
       // van hasselt east top teams
       for (int i = 0; i < 6; i++) {
@@ -108,7 +113,7 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       }
 
       // van hasselt center teams
-      for (int i = 0; i < 6; i++) {
+      for (int i = 0; i < 7; i++) {
         floor.createTeam(teamId++, vanHasseltEntranceX - tad + (tad * i), foyerStart - 8.5 * taw, FloorMap.E);
       }
 
@@ -169,10 +174,12 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       floor.createAisle(foyerEnd, foyerHeight, foyerStart - 1, foyerHeight);
       floor.createAisle(foyerEnd, foyerHeight, foyerEnd, lastY);
 
-      for (int team = 0; team < 10; team++) {
-        float y = lastY - (2 * tad) * team;
+      // Big room
+      List<Integer> bigRoomNumbers = Arrays.asList(5, 7, 7, 6, 6, 6, 6, 6, 7, 7, 7);
+      for (int row = 0; row < bigRoomNumbers.size(); row++) {
+        float y = lastY - (2 * tad) * row;
         floor.createAisle(foyerStart - 1, y, foyerEnd, y);
-        for (int times = 0; times < 7; times++) {
+        for (int times = 0; times < bigRoomNumbers.get(row); times++) {
           floor.createTeam(teamId++, foyerStart + 1 + taw * times * 1.5, y - 1.5 * tad, FloorMap.E);
         }
       }
@@ -215,7 +222,7 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       floor.createAisle(videXStart + 20 * tad, videYStart + 6 * taw, videXStart + 20 * tad, videYStart + 9 * taw);
       floor.createAisle(videXStart + 20 * tad, videYStart + 9 * taw, videXStart + 35 * tad, videYStart + 9 * taw);
       // comment next line to avoid all paths to the third floor going through van hasselt
-      floor.createAisle(videXStart + 35 * tad, videYStart + 9 * taw, videXStart + 35 * tad, videYStart + 10 * taw);
+//      floor.createAisle(videXStart + 35 * tad, videYStart + 9 * taw, videXStart + 35 * tad, videYStart + 10 * taw);
 
 
       // route to van hasselt
@@ -229,6 +236,7 @@ public class FloorGeneratorNWERC2022 extends FloorGenerator {
       floor.createAisle(vanHasseltEntranceX, foyerStart - 6 * taw, vanHasseltEntranceX + 8 * tad, foyerStart - 8 * taw);
       floor.createAisle(vanHasseltEntranceX, foyerStart - 12 * taw, vanHasseltEntranceX + 8 * tad,
           foyerStart - 8 * taw);
+      floor.createAisle(vanHasseltEntranceX - 2 * tad, foyerStart - 9 * taw, vanHasseltEntranceX, foyerStart - 12 * taw);
 
 
       floor.write(Paths.get("tmp").toFile());
